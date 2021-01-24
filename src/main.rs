@@ -48,3 +48,44 @@ fn parse(parse_str: &str, stdin_str: &str) -> String {
     };
     result_str
 }
+
+#[derive(Debug)]
+struct Queue<T> {
+    data: Vec<T>,
+}
+
+impl<T> Queue<T> {
+    fn len(&self) -> usize {
+        self.data.len()
+    }
+
+    fn new() -> Self {
+        Queue { data: Vec::new() }
+    }
+
+    fn from(from: Vec<T>) -> Self {
+        Queue {
+            data: from
+        }
+    }
+
+    fn push(&mut self, item: T) {
+        self.data.push(item);
+    }
+
+    fn pop(&mut self) -> T {
+        self.data.remove(0)
+    }
+}
+
+impl Queue<char> {
+    fn to_string(&self) -> String {
+        self.data.iter().collect::<String>()
+    }
+
+    fn from_str(str: &str) -> Self {
+        Queue {
+            data: str.chars().collect::<Vec<_>>()
+        }
+    }
+}
