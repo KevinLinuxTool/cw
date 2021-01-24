@@ -22,20 +22,12 @@ fn main() {
 }
 
 fn parse(parse_str: &str, stdin_str: &str) -> String {
-    let date = Local::now();
     let mut result: Vec<String> = Vec::new();
     let split = parse_str.split("{{");
     for i in split {
         let ss = i.split("}}");
         for s in ss {
-            result.push(
-                if s == "{}" {
-                    String::from(stdin_str)
-                } else if s.starts_with("{") && s.ends_with("}") {
-                    date.format(&s[1..s.len() - 1]).to_string()
-                } else {
-                    String::from(s)
-                });
+            result.push(parse_var(s, stdin_str));
             result.push(String::from("}"));
         }
         result.pop();
@@ -43,10 +35,43 @@ fn parse(parse_str: &str, stdin_str: &str) -> String {
     }
     result.pop();
     let mut result_str = String::new();
-    for rstr in result {
-        result_str.push_str(&rstr);
+    for r_str in result {
+        result_str.push_str(&r_str);
     };
     result_str
+}
+
+fn parse_var(str: &str, stdin: &str) -> String {
+    let date = Local::now();
+    let mut q: Queue<char> = Queue::from_str(str);
+    let mut r = String::new();
+    let mut is_under_scope = false;
+    let mut scope: Queue<char> = Queue::new();
+    while q.len() != 0 {
+        let c = q.pop();
+        match c {
+            '{' => {
+                is_under_scope = true;
+                scope.clear();
+            }
+            '}' => {
+                is_under_scope = false;
+                let sc = scope.to_string();
+                match &sc[..] {
+                    "" => r.push_str(stdin),
+                    _ => r.push_str(&date.format(&sc[..]).to_string())
+                };
+            }
+            _ => {
+                if is_under_scope {
+                    scope.push(c);
+                } else {
+                    r.push(c);
+                }
+            }
+        };
+    };
+    r.to_string()
 }
 
 #[derive(Debug)]
@@ -54,6 +79,7 @@ struct Queue<T> {
     data: Vec<T>,
 }
 
+#[allow(dead_code)]
 impl<T> Queue<T> {
     fn len(&self) -> usize {
         self.data.len()
@@ -76,8 +102,13 @@ impl<T> Queue<T> {
     fn pop(&mut self) -> T {
         self.data.remove(0)
     }
+
+    fn clear(&mut self) {
+        self.data.clear();
+    }
 }
 
+#[allow(dead_code)]
 impl Queue<char> {
     fn to_string(&self) -> String {
         self.data.iter().collect::<String>()
