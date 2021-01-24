@@ -1,5 +1,6 @@
 use std::{env, io};
 use std::io::BufRead;
+use std::iter::FromIterator;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -48,5 +49,11 @@ impl<T> Queue<T> {
 
     fn pop(&mut self) -> T {
         self.data.remove(0)
+    }
+}
+
+impl Queue<char> {
+    fn to_string(&self) -> String {
+        self.data.iter().collect::<String>()
     }
 }
