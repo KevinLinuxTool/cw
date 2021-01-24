@@ -7,12 +7,18 @@ use chrono::Local;
 fn main() {
     let args: Vec<String> = env::args().collect();
     let stdin = io::stdin();
-    let stdout = io::stdout();
 
-    println!("{}", parse("{}{{%Y-%m-%d][%H:%M:%S}}{%Y-%m-%d %H:%M:%S}", "2333"))
-    //for line in stdin.lock().lines() {
-    //    let line = line.expect("NONE");
-    //}
+    if args.len() != 2 {
+        panic!("Number of arguments must be 1!");
+    }
+
+    let parse_str = args[1].clone();
+    let mut stdin_str = String::new();
+    for line in stdin.lock().lines() {
+        stdin_str.push_str(&*line.expect(""));
+    }
+
+    println!("{}", parse(&parse_str, &stdin_str));
 }
 
 fn parse(parse_str: &str, stdin_str: &str) -> String {
