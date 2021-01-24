@@ -15,7 +15,7 @@ fn parse<'a>(parse_str: &'a str, stdin_str: &'a str) -> &'a str {
     // {yy}, {yyyy} -> year
     // {m},  {mm} -> month
     // {d},  {dd} -> day
-    let mut q: Queue = Queue::from(parse_str);
+    let mut q: Queue<char> = Queue::from(parse_str.chars().collect::<Vec<_>>());
     while q.len() > 0 {
         println!("{}", q.pop())
     }
@@ -23,11 +23,11 @@ fn parse<'a>(parse_str: &'a str, stdin_str: &'a str) -> &'a str {
 }
 
 #[derive(Debug)]
-struct Queue {
-    data: Vec<char>,
+struct Queue<T> {
+    data: Vec<T>,
 }
 
-impl Queue {
+impl<T> Queue<T> {
     fn len(&self) -> usize {
         self.data.len()
     }
@@ -36,17 +36,17 @@ impl Queue {
         Queue { data: Vec::new() }
     }
 
-    fn from(from: &str) -> Self {
+    fn from(from: Vec<T>) -> Self {
         Queue {
-            data: from.chars().collect::<Vec<_>>()
+            data: from
         }
     }
 
-    fn push(&mut self, item: char) {
+    fn push(&mut self, item: T) {
         self.data.push(item);
     }
 
-    fn pop(&mut self) -> char {
+    fn pop(&mut self) -> T {
         self.data.remove(0)
     }
 }
