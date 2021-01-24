@@ -16,7 +16,7 @@ fn parse<'a>(parse_str: &'a str, stdin_str: &'a str) -> &'a str {
     // {yy}, {yyyy} -> year
     // {m},  {mm} -> month
     // {d},  {dd} -> day
-    let mut q: Queue<char> = Queue::from(parse_str.chars().collect::<Vec<_>>());
+    let mut q: Queue<char> = Queue::from_str(parse_str);
     while q.len() > 0 {
         println!("{}", q.pop())
     }
@@ -55,5 +55,11 @@ impl<T> Queue<T> {
 impl Queue<char> {
     fn to_string(&self) -> String {
         self.data.iter().collect::<String>()
+    }
+
+    fn from_str(str: &str) -> Self {
+        Queue {
+            data: str.chars().collect::<Vec<_>>()
+        }
     }
 }
