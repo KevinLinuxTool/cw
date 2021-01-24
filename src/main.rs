@@ -1,6 +1,7 @@
 use std::{env, io};
 use std::io::BufRead;
 use std::iter::FromIterator;
+use std::time::SystemTime;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -16,10 +17,25 @@ fn parse<'a>(parse_str: &'a str, stdin_str: &'a str) -> &'a str {
     // {yy}, {yyyy} -> year
     // {m},  {mm} -> month
     // {d},  {dd} -> day
-    let mut q: Queue<char> = Queue::from_str(parse_str);
-    while q.len() > 0 {
-        println!("{}", q.pop())
+    let mut result: Vec<&str> = Vec::new();
+    let split = parse_str.split("{{");
+    let mut index = 0;
+    let mut isFirst = true;
+    for i in split {
+        let ss = i.split("}}");
+        for s in ss {
+            result.push(match s {
+                // TODO: FINISH LOGIC
+                "{}" => stdin_str,
+                _ => s
+            });
+            result.push("}");
+        }
+        result.pop();
+        result.push("{");
     }
+    result.pop();
+
     parse_str
 }
 
